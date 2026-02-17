@@ -13,10 +13,6 @@ INSERT INTO ConferenceDivision (Conference, Division) VALUES
     ('NFC', 'West');
 
 
--- Check ConferenceDivision table
-SELECT * FROM ConferenceDivision;
-
-
 -- Insert AFC North teams (4 rows)
 INSERT INTO Team (TeamName, TeamCityState, TeamColors, ConferenceDivisionID) VALUES
     ('Baltimore Ravens', 'Baltimore, MD', 'Purple, Black, Gold', 2),
