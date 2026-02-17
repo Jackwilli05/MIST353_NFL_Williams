@@ -7,8 +7,9 @@
 
 use MIST353_NFL_RDB_Williams;
 
--- Create tables for first iteration
 
+-- Create tables for first iteration
+go
 
 create TABLE ConferenceDivision (
     ConferenceDivisionID INT Identity(1,1)
@@ -17,9 +18,18 @@ create TABLE ConferenceDivision (
         constraint CHK_Conference CHECK (Conference IN ('AFC','NFC')),
     Division NVARCHAR(50) NOT NULL
         constraint CHK_Division CHECK (Division IN ('East','North','South','West'))
+    constraint UK_ConferenceDivision UNIQUE (Conference, Division)
 );
 
-GO
+/*
+alter table ConferenceDivision
+    NOCHECK CONSTRAINT CK_ConferenceNames;
+
+alter table ConferenceDivision
+    CHECK CONSTRAINT CK_ConferenceNames;
+*/
+
+go
 
 create TABLE Team (
     TeamID INT Identity(1,1) 
