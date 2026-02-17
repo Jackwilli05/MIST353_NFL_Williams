@@ -1,5 +1,5 @@
 -- Create a database for NFL app
-use master;
+--use master;
 
 -- CREATE DATABASE MIST353_NFL_RDB_Williams;
 
@@ -8,7 +8,7 @@ use master;
 use MIST353_NFL_RDB_Williams;
 
 -- Create tables for first iteration
-go
+
 
 create TABLE ConferenceDivision (
     ConferenceDivisionID INT Identity(1,1)
@@ -18,6 +18,8 @@ create TABLE ConferenceDivision (
     Division NVARCHAR(50) NOT NULL
         constraint CHK_Division CHECK (Division IN ('East','North','South','West'))
 );
+
+GO
 
 create TABLE Team (
     TeamID INT Identity(1,1) 
