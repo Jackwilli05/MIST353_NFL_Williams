@@ -78,9 +78,9 @@ GO
 
 
 
-
---See all tables
 /*
+--See all tables
+
 SELECT TABLE_NAME 
 FROM INFORMATION_SCHEMA.TABLES 
 WHERE TABLE_TYPE = 'BASE TABLE';
@@ -93,3 +93,7 @@ GO
 -- See data in Team
 SELECT * FROM Team;
 GO
+*/
+
+
+
