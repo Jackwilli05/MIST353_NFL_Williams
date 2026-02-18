@@ -77,18 +77,20 @@ INSERT INTO Team (TeamID, TeamName, TeamCityState, TeamColors, ConferenceDivisio
 GO
 
 
---See all tables
+USE MIST353_NFL_RDB_Williams;
+GO
 
+-- See all tables in your database
 SELECT TABLE_NAME 
 FROM INFORMATION_SCHEMA.TABLES 
 WHERE TABLE_TYPE = 'BASE TABLE';
 GO
 
--- See data in ConferenceDivision
+-- See all data in ConferenceDivision
 SELECT * FROM ConferenceDivision;
 GO
 
--- See data in Team
+-- See all data in Team
 SELECT * FROM Team;
 GO
 
