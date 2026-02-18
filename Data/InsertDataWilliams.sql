@@ -80,7 +80,7 @@ GO
 USE MIST353_NFL_RDB_Williams;
 GO
 
--- See all tables in your database
+-- See all tables in database
 SELECT TABLE_NAME 
 FROM INFORMATION_SCHEMA.TABLES 
 WHERE TABLE_TYPE = 'BASE TABLE';
