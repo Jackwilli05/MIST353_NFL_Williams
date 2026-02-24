@@ -14,7 +14,7 @@ GO
 SELECT * FROM Team;
 GO
 
--- Query 3: Join query (teams with their conference and division)
+-- Query 3: Join query 
 SELECT 
     t.TeamName,
     t.TeamCityState,
