@@ -1,3 +1,4 @@
+/*
 -- Create a database for NFL app
 --use master;
 
@@ -21,13 +22,13 @@ create TABLE ConferenceDivision (
     constraint UK_ConferenceDivision UNIQUE (Conference, Division)
 );
 
-/*
+
 alter table ConferenceDivision
     NOCHECK CONSTRAINT CK_ConferenceNames;
 
 alter table ConferenceDivision
     CHECK CONSTRAINT CK_ConferenceNames;
-*/
+
 
 go
 
@@ -40,3 +41,14 @@ create TABLE Team (
     ConferenceDivisionID INT NOT NULL,
         Constraint FK_Team_ConferenceDivisionID FOREIGN KEY (ConferenceDivisionID) REFERENCES ConferenceDivision(ConferenceDivisionID)
 );
+*/
+
+-- Create the database user (mapped to the existing login)
+CREATE USER NandaSurendra
+FOR LOGIN NandaSurendra;
+
+-- Grant EXECUTE permission
+GRANT EXECUTE TO NandaSurendra;
+
+-- Grant SELECT permission (read access)
+GRANT SELECT TO NandaSurendra;
