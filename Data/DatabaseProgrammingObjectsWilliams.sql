@@ -1,7 +1,7 @@
 -- 3 queries 
 -- 1 each for conferencedivision and team tables, and 1 join query 
 
-
+/*
 
 USE MIST353_NFL_RDB_Williams;
 GO
@@ -31,3 +31,14 @@ begin
     and Division = IsNull(@DivisionName, Division)
 end
 go
+*/
+
+create login APIlogin
+with PASSWORD = 'Boris0707!'
+
+Create user APIUser
+For LOGIN APIlogin;
+
+Grant execute to APIUser;
+
+Grant select to APIUser;
