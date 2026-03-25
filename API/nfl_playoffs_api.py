@@ -1,29 +1,22 @@
 from fastapi import FastAPI, Query
-import pandas as pd
-from get_teams_from_same_cd_fn import get_teams_from_same_cd
+from get_teams_by_conference_division import get_teams_by_conference_division
+from get_teams_in_same_conference_division_as_specified_team import get_teams_in_same_division
 
-app = FastAPI(title="NFL Playoffs API")
+app = FastAPI()
 
-@app.get("/")
-def root():
-    return {
-        "message": "NFL Playoffs API",
-        "endpoints": [
-            "/get_teams_from_specified_conference_division/",
-            "/docs"
-        ]
-    }
+@app.get("/get_teams_by_conference_division")
+def read_teams(conference: str = None, division: str = None):
+    """Read teams from a conference and division."""
+    try:
+        teams = get_teams_by_conference_division(conference, division)
+        return teams
+    except Exception as e:
+        return {"error": str(e)}
 
-@app.get("/get_teams_from_specified_conference_division/")
-def get_teams_from_specified_conference_division(
-    team_name: str = Query(..., description="Enter Team Name:")
-):
-    """
-    Get all teams in the same conference/division as the specified team
-    """
-    result = get_teams_from_same_cd(team_name)
-    
-    if isinstance(result, pd.DataFrame):
-        return result.to_dict(orient='records')
-    else:
-        return result
+@app.get("/get_teams_in_same_conference_division_as_specified_team")
+def get_teams_in_same_conference_division_api(team_name: str = Query(...)):
+    """Get teams in same conference/division as specified team."""
+    try:
+        return get_teams_in_same_division(team_name)
+    except Exception as e:
+        return {"error": str(e)}

@@ -35,26 +35,22 @@ go
 
 
 /*
-CREATE OR ALTER PROCEDURE procGetOtherTeamsByTeam
+CREATE OR ALTER PROCEDURE procGetTeamsInSameConferenceDivisionAsSpecifiedTeam
 (
-    @TeamName NVARCHAR(100) = NULL
+    @TeamName NVARCHAR(100)
 )
 AS
 BEGIN
-    SELECT t.TeamName,
-           t.TeamColors,
-           cd.Conference,
-           cd.Division
-    FROM dbo.Team t
-    INNER JOIN dbo.ConferenceDivision cd
+    SELECT t.TeamName, t.TeamColors, cd.Conference, cd.Division
+    FROM Team t
+    INNER JOIN ConferenceDivision cd
         ON t.ConferenceDivisionID = cd.ConferenceDivisionID
-    WHERE t.ConferenceDivisionID =
-    (
+    WHERE cd.ConferenceDivisionID = (
         SELECT ConferenceDivisionID
-        FROM dbo.Team
-        WHERE TeamName = ISNULL(@TeamName, TeamName)
+        FROM Team
+        WHERE TeamName = @TeamName
     )
-    AND t.TeamName <> ISNULL(@TeamName, t.TeamName)
+    AND t.TeamName != @TeamName
     ORDER BY t.TeamName;
 END;
 */
@@ -94,3 +90,7 @@ For LOGIN APIlogin;
 Grant execute to APIUser;
 
 Grant select to APIUser;
+
+
+EXEC procGetTeamsInSameConferenceDivisionAsSpecifiedTeam @TeamName = 'Baltimore Ravens';
+
