@@ -76,4 +76,6 @@ INSERT INTO Team (TeamName, TeamCityState, TeamColors, ConferenceDivisionID) VAL
 ('Seattle Seahawks', 'Seattle, WA', 'College Navy, Action Green, Wolf Grey', 8);
 GO
 
-
+INSERT INTO AppUser (Firstname, Lastname, Email, PasswordHash, UserRole)
+VALUES ('Tom', 'Brady', 'tom.brady@example.com', CONVERT(VARBINARY(200), '0x01', 1), 'Admin');
+GO

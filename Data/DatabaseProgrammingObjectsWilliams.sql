@@ -55,6 +55,23 @@ BEGIN
 END;
 */
 
+CREATE OR ALTER PROCEDURE procValidateUser
+(
+    @Email NVARCHAR(100),
+    @PasswordHash NVARCHAR(200)
+)
+AS
+BEGIN
+    SELECT AppUserID, Firstname + ' ' + Lastname AS Fullname, UserRole
+    FROM AppUser
+    WHERE Email = @Email 
+      AND PasswordHash = CONVERT(VARBINARY(200), @PasswordHash, 1);
+END;
+GO
+
+-- execute procValidateUser @Email = 'tom.brady@example.com', @PasswordHash = '0x01';
+
+
 SELECT TABLE_NAME 
 FROM INFORMATION_SCHEMA.TABLES 
 WHERE TABLE_TYPE = 'BASE TABLE';
@@ -94,3 +111,6 @@ Grant select to APIUser;
 
 EXEC procGetTeamsInSameConferenceDivisionAsSpecifiedTeam @TeamName = 'Baltimore Ravens';
 
+UPDATE AppUser 
+SET UserRole = 'NFL Fan'
+WHERE Email = 'tom.brady@example.com';

@@ -49,3 +49,15 @@ GRANT EXECUTE TO NandaSurendra;
 
 -- Grant SELECT permission (read access)
 GRANT SELECT TO NandaSurendra;
+
+
+
+CREATE TABLE AppUser (
+    AppUserID INT IDENTITY(1,1) PRIMARY KEY,
+    Firstname NVARCHAR(50) NOT NULL,
+    Lastname NVARCHAR(50) NOT NULL,
+    Email NVARCHAR(100) NOT NULL UNIQUE,
+    PasswordHash VARBINARY(200) NOT NULL,
+    UserRole NVARCHAR(50) NOT NULL
+);
+GO
