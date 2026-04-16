@@ -1,10 +1,6 @@
+gunicorn
 fastapi
-uvicorn
 uvicorn[standard]
 python-dotenv
-<<<<<<< HEAD
-pyodbc
-=======
-pyodbc
-gunicorn
->>>>>>> 305551599909108cf57f356b320fee9678cfb174
+pymssql # discuss why
+pyodbc # and why not
