@@ -43,7 +43,7 @@ jobs:
         with:
           name: python-app
           path: |
-            API/
+            .
             !.venv/
 
       # 🚫 Opting Out of Oryx Build
