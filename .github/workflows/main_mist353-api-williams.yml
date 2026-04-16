@@ -7,10 +7,10 @@ name: Build and deploy Python app to Azure Web App - mist353-api-williams
 on:
   push:
     branches:
-      - main
-      Paths:
-        - 'API/**'
-        - 'requirements.txt'
+      - main   
+    paths:
+         - 'API/**'
+         - 'requirements.txt'
   workflow_dispatch:
 
 jobs:
