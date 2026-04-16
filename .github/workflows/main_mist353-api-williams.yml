@@ -10,6 +10,7 @@ on:
       - main   
     paths:
       - 'API/**'
+      - 'requirements.txt'
       
   
   workflow_dispatch:
