@@ -1,6 +1,0 @@
-gunicorn
-fastapi
-uvicorn
-uvicorn[standard]
-python-dotenv
-pyodbc
