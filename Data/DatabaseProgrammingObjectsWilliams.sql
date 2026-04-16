@@ -71,6 +71,24 @@ GO
 
 -- execute procValidateUser @Email = 'tom.brady@example.com', @PasswordHash = '0x01';
 
+CREATE OR ALTER PROCEDURE procGetTeamsForSpecifiedFan
+(
+    @Email NVARCHAR(100)
+)
+AS
+BEGIN
+    SELECT t.TeamID, t.TeamName, t.TeamCityState, t.TeamColors, cd.Conference, cd.Division
+    FROM FanFavoriteTeams fft
+    INNER JOIN AppUser au ON fft.AppUserID = au.AppUserID
+    INNER JOIN Team t ON fft.TeamID = t.TeamID
+    INNER JOIN ConferenceDivision cd ON t.ConferenceDivisionID = cd.ConferenceDivisionID
+    WHERE au.Email = @Email;
+END;
+GO
+
+EXEC procGetTeamsForSpecifiedFan @Email = 'tom.brady@example.com';
+GO
+
 
 SELECT TABLE_NAME 
 FROM INFORMATION_SCHEMA.TABLES 

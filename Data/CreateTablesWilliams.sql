@@ -61,3 +61,12 @@ CREATE TABLE AppUser (
     UserRole NVARCHAR(50) NOT NULL
 );
 GO
+
+CREATE TABLE FanFavoriteTeams (
+    FanFavoriteTeamID INT IDENTITY(1,1) PRIMARY KEY,
+    AppUserID INT NOT NULL,
+    TeamID INT NOT NULL,
+    FOREIGN KEY (AppUserID) REFERENCES AppUser(AppUserID),
+    FOREIGN KEY (TeamID) REFERENCES Team(TeamID)
+);
+GO

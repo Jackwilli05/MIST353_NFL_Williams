@@ -79,3 +79,9 @@ GO
 INSERT INTO AppUser (Firstname, Lastname, Email, PasswordHash, UserRole)
 VALUES ('Tom', 'Brady', 'tom.brady@example.com', CONVERT(VARBINARY(200), '0x01', 1), 'Admin');
 GO
+
+INSERT INTO FanFavoriteTeams (AppUserID, TeamID) VALUES
+(1, 14),  -- Kansas City Chiefs
+(1, 5),   -- Baltimore Ravens
+(1, 8);   -- Pittsburgh Steelers
+GO
