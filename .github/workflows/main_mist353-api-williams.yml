@@ -10,7 +10,6 @@ on:
       - main
     paths:
       - 'API/**'
-
   workflow_dispatch:
 
 jobs:
