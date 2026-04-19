@@ -1,5 +1,5 @@
 import os
-import pyodbc
+import pymssql
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -9,7 +9,14 @@ def get_db_connection():
     database = os.getenv("DB_NAME")
     username = os.getenv("DB_LOGIN")
     password = os.getenv("DB_PASSWORD")
-
-    connection_string = f"DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}"
     
-    return pyodbc.connect(connection_string)
+    # Remove 'tcp:' and ',1433' from server for pymssql
+    server = server.replace('tcp:', '').replace(',1433', '')
+    
+    conn = pymssql.connect(
+        server=server,
+        user=username,
+        password=password,
+        database=database
+    )
+    return conn

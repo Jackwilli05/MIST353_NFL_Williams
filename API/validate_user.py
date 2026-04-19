@@ -3,14 +3,14 @@ from get_db_connection import get_db_connection
 def validate_user(email: str, password: str):
     try:
         conn = get_db_connection()
-        cursor = conn.cursor()
+        cursor = conn.cursor(as_dict=True)
         
-        cursor.execute("EXEC procValidateUser @Email = ?, @PasswordHash = ?", (email, password))
+        cursor.execute(
+            "EXEC procValidateUser @Email = %s, @PasswordHash = %s",
+            (email, password)
+        )
         
-        columns = [col[0] for col in cursor.description]
-        rows = cursor.fetchall()
-        result = [dict(zip(columns, row)) for row in rows]
-        
+        result = cursor.fetchall()
         cursor.close()
         conn.close()
         

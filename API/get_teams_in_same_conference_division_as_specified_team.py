@@ -6,23 +6,17 @@ def get_teams_in_same_division(team_name):
     
     try:
         conn = get_db_connection()
-        cursor = conn.cursor()
+        cursor = conn.cursor(as_dict=True)
         
-        cursor.execute("EXEC procGetTeamsInSameConferenceDivisionAsSpecifiedTeam @TeamName = ?", (team_name,))
+        cursor.execute(
+            "EXEC procGetTeamsInSameConferenceDivisionAsSpecifiedTeam @TeamName = %s",
+            (team_name.strip(),)
+        )
         
-        # Get column names
-        columns = [column[0] for column in cursor.description]
-        
-        # Fetch all rows and convert to list of dictionaries
-        rows = cursor.fetchall()
-        result = []
-        for row in rows:
-            result.append(dict(zip(columns, row)))
-        
+        result = cursor.fetchall()
         cursor.close()
         conn.close()
         
         return result if result else {"message": f"No teams found for {team_name}"}
-        
     except Exception as e:
         return {"error": str(e)}

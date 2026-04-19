@@ -3,14 +3,14 @@ from get_db_connection import get_db_connection
 def get_teams_for_specified_fan(email: str):
     try:
         conn = get_db_connection()
-        cursor = conn.cursor()
+        cursor = conn.cursor(as_dict=True)
         
-        cursor.execute("EXEC procGetTeamsForSpecifiedFan @Email = ?", (email,))
+        cursor.execute(
+            "EXEC procGetTeamsForSpecifiedFan @Email = %s",
+            (email,)
+        )
         
-        columns = [col[0] for col in cursor.description]
-        rows = cursor.fetchall()
-        result = [dict(zip(columns, row)) for row in rows]
-        
+        result = cursor.fetchall()
         cursor.close()
         conn.close()
         
