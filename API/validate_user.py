@@ -5,10 +5,8 @@ def validate_user(email: str, password: str):
         conn = get_db_connection()
         cursor = conn.cursor(as_dict=True)
         
-        cursor.execute(
-            "EXEC procValidateUser @Email = %s, @PasswordHash = %s",
-            (email, password)
-        )
+        # Professor's required syntax for stored procedure
+        cursor.execute("exec procValidateUser %s, %s", (email, password))
         
         result = cursor.fetchall()
         cursor.close()

@@ -5,10 +5,8 @@ def get_teams_for_specified_fan(email: str):
         conn = get_db_connection()
         cursor = conn.cursor(as_dict=True)
         
-        cursor.execute(
-            "EXEC procGetTeamsForSpecifiedFan @Email = %s",
-            (email,)
-        )
+        # Professor's required syntax for stored procedure
+        cursor.execute("exec procGetTeamsForSpecifiedFan %s", (email,))
         
         result = cursor.fetchall()
         cursor.close()

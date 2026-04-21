@@ -11,7 +11,8 @@ def get_db_connection():
     password = os.getenv("DB_PASSWORD")
     
     # Remove 'tcp:' and ',1433' from server for pymssql
-    server = server.replace('tcp:', '').replace(',1433', '')
+    if server:
+        server = server.replace('tcp:', '').replace(',1433', '')
     
     conn = pymssql.connect(
         server=server,

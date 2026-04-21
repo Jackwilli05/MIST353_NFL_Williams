@@ -5,10 +5,8 @@ def get_teams_by_conference_division(conference=None, division=None):
         conn = get_db_connection()
         cursor = conn.cursor(as_dict=True)
         
-        cursor.execute(
-            "EXEC procTeamsByConferenceDivision @ConferenceName = %s, @DivisionName = %s",
-            (conference, division)
-        )
+        # Professor's required syntax for stored procedure
+        cursor.execute("exec procTeamsByConferenceDivision %s, %s", (conference, division))
         
         result = cursor.fetchall()
         cursor.close()
