@@ -3,36 +3,45 @@ from fetch_data import fetch_data
 
 def validate_user_ui():
     st.header("Validate User")
+    
     email = st.text_input("Enter Email")
     password = st.text_input("Enter Password", type="password")
 
     if st.button("Validate User"):
-        input_params = {}
+        if not email.strip() or not password.strip():
+            st.error("Email and Password are required.")
+            return
         
-        if not email.strip():
-            st.error("Email is required.")
+        result = fetch_data("validate_user", {"email": email.strip(), "password": password.strip()}, method="POST")
+
+        if result and isinstance(result, list) and len(result) > 0:
+            # Store user info in session state
+            st.session_state.app_user_id = result[0]["AppUserID"]
+            st.session_state.app_user_fullname = result[0]["Fullname"]
+            st.session_state.is_authenticated = True
+            st.success(f"Welcome {st.session_state.app_user_fullname}!")
         else:
-            input_params["email"] = email.strip()
+            st.error("Invalid email or password")
 
-        if not password.strip():
-            st.error("Password is required.")
+    # Show fan's teams after login
+    if st.session_state.get("is_authenticated", False):
+        st.divider()
+        st.subheader(f"Teams associated with {st.session_state.app_user_fullname}")
+        
+        # Fetch fan's favorite teams
+        fan_data = fetch_data("get_teams_for_specified_fan", {"email": email.strip()}, method="GET")
+        
+        if fan_data and isinstance(fan_data, list) and len(fan_data) > 0:
+            # Add placeholder columns for Start Time and Venue if not in data
+            for team in fan_data:
+                if "StartTime" not in team:
+                    team["StartTime"] = "TBD"
+                if "Venue" not in team:
+                    team["Venue"] = "TBD"
+            
+            st.dataframe(fan_data, use_container_width=True, hide_index=True)
         else:
-            input_params["password"] = password.strip()
-
-        if email.strip() and password.strip():
-            result = fetch_data("validate_user", input_params, method="POST")
-
-            # Check if result is a list (successful validation)
-            if isinstance(result, list) and len(result) > 0:
-                st.subheader(f"User {email} is valid:")
-                st.dataframe(result, use_container_width=True, hide_index=True)
-            # Check if result is a dict with an error or message
-            elif isinstance(result, dict):
-                if "error" in result:
-                    st.error(result["error"])
-                elif "message" in result:
-                    st.info(result["message"])
-                else:
-                    st.info(f"User {email} is not valid. Please check the inputs and try again.")
-            else:
-                st.info(f"User {email} is not valid. Please check the inputs and try again.")
+            st.info("No teams associated with this fan yet.")
+        
+        # Show fan ID
+        st.text_input("Fan ID", value=st.session_state.app_user_id, disabled=True)

@@ -16,6 +16,12 @@ def get_teams_for_specified_fan_ui():
         
         if data and isinstance(data, list) and len(data) > 0:
             st.success(f"Found {len(data)} favorite teams for {email}")
+            # Add placeholder columns for Start Time and Venue if not in data
+            for team in data:
+                if "StartTime" not in team:
+                    team["StartTime"] = "TBD"
+                if "Venue" not in team:
+                    team["Venue"] = "TBD"
             st.dataframe(data, use_container_width=True, hide_index=True)
         elif isinstance(data, dict) and "message" in data:
             st.info(data["message"])
