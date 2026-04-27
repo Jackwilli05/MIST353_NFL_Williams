@@ -134,4 +134,71 @@ GO
 EXEC procGetTeamsForSpecifiedFan @Email = 'tom.brady@example.com';
 GO
 
-PRINT 'All data inserted successfully!';
+
+-- select * from AdminChangesTracker
+-- select * from Game
+-- select N.NFLAdminID, U.Firstname, U.LastName from NFLAdmin N inner join APPUser U on N.NFLAdminID = U.AppUserID
+
+-- =============================================
+-- CONFERENCE CHAMPIONSHIPS  (January 25, 2026)
+-- =============================================
+
+-- AFC Championship: (2) New England Patriots at (1) Denver Broncos
+-- Patriots win 10-7
+/*
+    @GameRound = 'Conference',
+    @HomeTeamID = 13, -- Denver Broncos
+    @AwayTeamID = 11, -- New England Patriots
+    @GameDate = '2026-01-25',
+    @GameStartTime = '15:00',
+    @StadiumID = 13, -- Empower Field at Mile High
+    @NFLAdminID = 5; -- Bill Belichick
+
+
+    @GameID = 11, 
+    @HomeTeamScore = 7,
+    @AwayTeamScore = 10,
+    @NFLAdminID = 6; -- Sean McVay
+*/
+
+
+-- NFC Championship: (5) LA Rams at (1) Seattle Seahawks
+-- Seahawks win 31-27
+/*
+    @GameRound = 'Conference',
+    @HomeTeamID = 32, -- Seattle Seahawks
+    @AwayTeamID = 30, -- LA Rams
+    @GameDate = '2026-01-25',
+    @GameStartTime = '18:30',
+    @StadiumID = 30, -- Lumen Field
+    @NFLAdminID = 6; -- Sean McVay
+
+    @GameID = 12,
+    @HomeTeamScore = 31,
+    @AwayTeamScore = 27,
+    @NFLAdminID = 7; -- Mike Tomlin
+*/
+
+-- =============================================
+-- SUPER BOWL LX  (February 8, 2026)
+-- Levi's Stadium, Santa Clara, CA (neutral site)
+-- NFC designated home team per rotation
+-- Seahawks win 29-13
+-- =============================================
+
+/*
+    @GameRound = 'Super Bowl',
+    @HomeTeamID = 32, -- Seattle Seahawks (NFC champion, designated home team)
+    @AwayTeamID = 11, -- New England Patriots (AFC champion)
+    @GameDate = '2026-02-08',
+    @GameStartTime = '18:30',
+    @StadiumID = 29, -- Levi's Stadium (neutral site)
+    @NFLAdminID = 5; -- Bill Belichick
+
+    @GameID = 13,  
+    @HomeTeamScore = 29,
+    @AwayTeamScore = 13,
+    @NFLAdminID = 8; -- Mike Tomlin
+
+*/
+
