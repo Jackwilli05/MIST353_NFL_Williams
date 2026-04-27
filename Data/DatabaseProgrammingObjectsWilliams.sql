@@ -78,15 +78,12 @@ CREATE OR ALTER PROCEDURE procGetTeamsForSpecifiedFan
 AS
 BEGIN
     SELECT t.TeamID, t.TeamName, t.TeamCityState, t.TeamColors, cd.Conference, cd.Division
-    FROM FanFavoriteTeams fft
-    INNER JOIN AppUser au ON fft.AppUserID = au.AppUserID
-    INNER JOIN Team t ON fft.TeamID = t.TeamID
+    FROM FanTeam ft
+    INNER JOIN AppUser au ON ft.NFLFanID = au.AppUserID
+    INNER JOIN Team t ON ft.TeamID = t.TeamID
     INNER JOIN ConferenceDivision cd ON t.ConferenceDivisionID = cd.ConferenceDivisionID
     WHERE au.Email = @Email;
 END;
-GO
-
-EXEC procGetTeamsForSpecifiedFan @Email = 'tom.brady@example.com';
 GO
 
 

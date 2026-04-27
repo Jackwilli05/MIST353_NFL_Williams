@@ -1,87 +1,137 @@
-USE [mist353-nfl-williams];
-go
+-- ============================================
+-- INSERT DATA
+-- ============================================
 
--- Insert all ConferenceDivision data (8 rows)
+-- STEP 1: ConferenceDivision
 INSERT INTO ConferenceDivision (Conference, Division) VALUES
-    ('AFC', 'East'),
-    ('AFC', 'North'),
-    ('AFC', 'South'),
-    ('AFC', 'West'),
-    ('NFC', 'East'),
-    ('NFC', 'North'),
-    ('NFC', 'South'),
-    ('NFC', 'West');
-
--- AFC East
-INSERT INTO Team (TeamName, TeamCityState, TeamColors, ConferenceDivisionID) VALUES
-('Buffalo Bills', 'Orchard Park, NY', 'Royal Blue, Red, White', 1),
-('Miami Dolphins', 'Miami Gardens, FL', 'Aqua, Orange, White', 1),
-('New England Patriots', 'Foxborough, MA', 'Navy Blue, Red, Silver', 1),
-('New York Jets', 'East Rutherford, NJ', 'Gotham Green, White', 1);
+('AFC', 'North'), ('AFC', 'South'), ('AFC', 'East'), ('AFC', 'West'),
+('NFC', 'North'), ('NFC', 'South'), ('NFC', 'East'), ('NFC', 'West');
 GO
 
--- AFC North
+-- STEP 2: Team (32 NFL Teams)
 INSERT INTO Team (TeamName, TeamCityState, TeamColors, ConferenceDivisionID) VALUES
-('Baltimore Ravens', 'Baltimore, MD', 'Purple, Black, Gold', 2),
-('Cincinnati Bengals', 'Cincinnati, OH', 'Black, Orange, White', 2),
-('Cleveland Browns', 'Cleveland, OH', 'Brown, Orange, White', 2),
-('Pittsburgh Steelers', 'Pittsburgh, PA', 'Black, Gold', 2);
-GO
-
--- AFC South
-INSERT INTO Team (TeamName, TeamCityState, TeamColors, ConferenceDivisionID) VALUES
-('Houston Texans', 'Houston, TX', 'Deep Steel Blue, Battle Red, Liberty White', 3),
-('Indianapolis Colts', 'Indianapolis, IN', 'Royal Blue, White', 3),
-('Jacksonville Jaguars', 'Jacksonville, FL', 'Teal, Black, Gold', 3),
-('Tennessee Titans', 'Nashville, TN', 'Navy Blue, Titans Blue, Red, Silver', 3);
-GO
-
--- AFC West
-INSERT INTO Team (TeamName, TeamCityState, TeamColors, ConferenceDivisionID) VALUES
-('Denver Broncos', 'Denver, CO', 'Orange, Navy Blue, White', 4),
-('Kansas City Chiefs', 'Kansas City, MO', 'Red, Gold, White', 4),
+-- AFC North (1)
+('Baltimore Ravens', 'Baltimore, MD', 'Purple, Black, Gold', 1),
+('Cincinnati Bengals', 'Cincinnati, OH', 'Black, Orange, White', 1),
+('Cleveland Browns', 'Cleveland, OH', 'Brown, Orange, White', 1),
+('Pittsburgh Steelers', 'Pittsburgh, PA', 'Black, Gold', 1),
+-- AFC South (2)
+('Houston Texans', 'Houston, TX', 'Deep Steel Blue, Battle Red', 2),
+('Indianapolis Colts', 'Indianapolis, IN', 'Royal Blue, White', 2),
+('Jacksonville Jaguars', 'Jacksonville, FL', 'Teal, Black, Gold', 2),
+('Tennessee Titans', 'Nashville, TN', 'Navy Blue, Titans Blue', 2),
+-- AFC East (3)
+('Buffalo Bills', 'Buffalo, NY', 'Royal Blue, Red, White', 3),
+('Miami Dolphins', 'Miami Gardens, FL', 'Aqua, Orange, White', 3),
+('New England Patriots', 'Foxborough, MA', 'Navy Blue, Red, Silver', 3),
+('New York Jets', 'East Rutherford, NJ', 'Gotham Green, White', 3),
+-- AFC West (4)
+('Denver Broncos', 'Denver, CO', 'Orange, Navy Blue', 4),
+('Kansas City Chiefs', 'Kansas City, MO', 'Red, Gold', 4),
 ('Las Vegas Raiders', 'Las Vegas, NV', 'Silver, Black', 4),
-('Los Angeles Chargers', 'Inglewood, CA', 'Powder Blue, White, Gold', 4);
+('Los Angeles Chargers', 'Inglewood, CA', 'Powder Blue, Gold', 4),
+-- NFC North (5)
+('Chicago Bears', 'Chicago, IL', 'Navy Blue, Orange', 5),
+('Detroit Lions', 'Detroit, MI', 'Honolulu Blue, Silver', 5),
+('Green Bay Packers', 'Green Bay, WI', 'Dark Green, Gold', 5),
+('Minnesota Vikings', 'Minneapolis, MN', 'Purple, Gold', 5),
+-- NFC South (6)
+('Atlanta Falcons', 'Atlanta, GA', 'Red, Black, Silver', 6),
+('Carolina Panthers', 'Charlotte, NC', 'Black, Process Blue', 6),
+('New Orleans Saints', 'New Orleans, LA', 'Old Gold, Black', 6),
+('Tampa Bay Buccaneers', 'Tampa, FL', 'Red, Pewter', 6),
+-- NFC East (7)
+('Dallas Cowboys', 'Arlington, TX', 'Navy Blue, Silver', 7),
+('New York Giants', 'East Rutherford, NJ', 'Royal Blue, Red', 7),
+('Philadelphia Eagles', 'Philadelphia, PA', 'Midnight Green, Silver', 7),
+('Washington Commanders', 'Landover, MD', 'Burgundy, Gold', 7),
+-- NFC West (8)
+('Arizona Cardinals', 'Glendale, AZ', 'Cardinal Red, White', 8),
+('Los Angeles Rams', 'Inglewood, CA', 'Royal Blue, Yellow', 8),
+('San Francisco 49ers', 'Santa Clara, CA', 'Scarlet, Gold', 8),
+('Seattle Seahawks', 'Seattle, WA', 'College Navy, Action Green', 8);
 GO
 
--- NFC East
-INSERT INTO Team (TeamName, TeamCityState, TeamColors, ConferenceDivisionID) VALUES
-('Dallas Cowboys', 'Arlington, TX', 'Navy Blue, Metallic Silver, White', 5),
-('New York Giants', 'East Rutherford, NJ', 'Royal Blue, Red, White', 5),
-('Philadelphia Eagles', 'Philadelphia, PA', 'Midnight Green, Silver, Black, White', 5),
-('Washington Commanders', 'Landover, MD', 'Burgundy, Gold', 5);
+-- STEP 3: AppUser
+INSERT INTO AppUser (Firstname, Lastname, Email, PasswordHash, UserRole) VALUES
+('Tom', 'Brady', 'tom.brady@example.com', 0x01, 'NFLFan'),
+('Aaron', 'Rodgers', 'aaron.rodgers@example.com', 0x01, 'NFLFan'),
+('Drew', 'Brees', 'drew.brees@example.com', 0x01, 'NFLFan'),
+('Patrick', 'Mahomes', 'patrick.mahomes@example.com', 0x01, 'NFLFan'),
+('Bill', 'Belichick', 'bill.belichick@example.com', 0x01, 'NFLAdmin'),
+('Sean', 'McVay', 'sean.mcvay@example.com', 0x01, 'NFLAdmin'),
+('Mike', 'Tomlin', 'mike.tomlin@example.com', 0x01, 'NFLAdmin'),
+('Andy', 'Reid', 'andy.reid@example.com', 0x01, 'NFLAdmin');
 GO
 
--- NFC North
-INSERT INTO Team (TeamName, TeamCityState, TeamColors, ConferenceDivisionID) VALUES
-('Chicago Bears', 'Chicago, IL', 'Navy Blue, Orange', 6),
-('Detroit Lions', 'Detroit, MI', 'Honolulu Blue, Silver', 6),
-('Green Bay Packers', 'Green Bay, WI', 'Dark Green, Gold', 6),
-('Minnesota Vikings', 'Minneapolis, MN', 'Purple, Gold, White', 6);
+-- STEP 4: NFLFan & NFLAdmin
+INSERT INTO NFLFan (NFLFanID) VALUES (1), (2), (3), (4);
+INSERT INTO NFLAdmin (NFLAdminID) VALUES (5), (6), (7), (8);
 GO
 
--- NFC South
-INSERT INTO Team (TeamName, TeamCityState, TeamColors, ConferenceDivisionID) VALUES
-('Atlanta Falcons', 'Atlanta, GA', 'Red, Black, Silver, White', 7),
-('Carolina Panthers', 'Charlotte, NC', 'Black, Process Blue, Silver', 7),
-('New Orleans Saints', 'New Orleans, LA', 'Old Gold, Black, White', 7),
-('Tampa Bay Buccaneers', 'Tampa, FL', 'Pewter, Red, Bay Orange, White', 7);
+-- STEP 5: FanTeam
+INSERT INTO FanTeam (NFLFanID, TeamID, PrimaryTeam) VALUES
+(1, 11, 1),   -- Tom Brady: Patriots
+(1, 24, 0),   -- Tom Brady: Buccaneers
+(2, 19, 1),   -- Aaron Rodgers: Packers
+(2, 12, 0),   -- Aaron Rodgers: Jets
+(2, 4, 0),    -- Aaron Rodgers: Steelers
+(3, 23, 1),   -- Drew Brees: Saints
+(3, 16, 0),   -- Drew Brees: Chargers
+(4, 14, 1);   -- Patrick Mahomes: Chiefs
 GO
 
--- NFC West
-INSERT INTO Team (TeamName, TeamCityState, TeamColors, ConferenceDivisionID) VALUES
-('Arizona Cardinals', 'Glendale, AZ', 'Cardinal Red, White, Black', 8),
-('Los Angeles Rams', 'Inglewood, CA', 'Royal Blue, Sol Yellow, White', 8),
-('San Francisco 49ers', 'Santa Clara, CA', 'Scarlet Red, Metallic Gold', 8),
-('Seattle Seahawks', 'Seattle, WA', 'College Navy, Action Green, Wolf Grey', 8);
+-- STEP 6: Stadium (Sample)
+INSERT INTO Stadium (StadiumName, StadiumCityState, Capacity) VALUES
+('Gillette Stadium', 'Foxborough, MA', 65878),
+('MetLife Stadium', 'East Rutherford, NJ', 82500),
+('Lambeau Field', 'Green Bay, WI', 81441),
+('Arrowhead Stadium', 'Kansas City, MO', 76416),
+('AT&T Stadium', 'Arlington, TX', 80000),
+('Levis Stadium', 'Santa Clara, CA', 68500),
+('Lumen Field', 'Seattle, WA', 69000),
+('SoFi Stadium', 'Inglewood, CA', 70240);
 GO
 
-INSERT INTO AppUser (Firstname, Lastname, Email, PasswordHash, UserRole)
-VALUES ('Tom', 'Brady', 'tom.brady@example.com', CONVERT(VARBINARY(200), '0x01', 1), 'Admin');
+-- STEP 7: TeamStadium (Sample)
+INSERT INTO TeamStadium (TeamID, StadiumID, StartYear, EndYear) VALUES
+(11, 1, 2002, NULL),   -- Patriots at Gillette
+(12, 2, 2010, NULL),   -- Jets at MetLife
+(19, 3, 1957, NULL),   -- Packers at Lambeau
+(14, 4, 1972, NULL),   -- Chiefs at Arrowhead
+(25, 5, 2009, NULL),   -- Cowboys at AT&T
+(31, 6, 2014, NULL),   -- 49ers at Levi's
+(32, 7, 2002, NULL),   -- Seahawks at Lumen
+(30, 8, 2020, NULL);   -- Rams at SoFi
 GO
 
-INSERT INTO FanFavoriteTeams (AppUserID, TeamID) VALUES
-(1, 14),  -- Kansas City Chiefs
-(1, 5),   -- Baltimore Ravens
-(1, 8);   -- Pittsburgh Steelers
+-- STEP 8: Game (Sample Playoff Games)
+INSERT INTO Game (GameRound, GameDate, GameStartTime, HomeTeamID, AwayTeamID, StadiumID, HomeTeamScore, AwayTeamScore, WinningTeamID) VALUES
+('Wild Card', '2026-01-10', '16:30:00', 22, 30, 8, 31, 34, 30),
+('Wild Card', '2026-01-10', '20:00:00', 17, 19, 3, 21, 27, 19),
+('Divisional', '2026-01-17', '16:30:00', 14, 11, 4, 33, 30, 14),
+('Divisional', '2026-01-17', '20:00:00', 32, 31, 7, 41, 6, 32);
 GO
+
+-- STEP 9: AdminChangesTracker
+INSERT INTO AdminChangesTracker (NFLAdminID, GameID, ChangeType, ChangeDescription) VALUES
+(5, 1, 'Insert', 'Bill Belichick scheduled Wild Card game'),
+(6, 2, 'Insert', 'Sean McVay scheduled Wild Card game'),
+(7, 3, 'Insert', 'Mike Tomlin scheduled Divisional game'),
+(8, 4, 'Insert', 'Andy Reid scheduled Divisional game');
+GO
+
+-- VERIFICATION QUERIES
+SELECT 'ConferenceDivision' AS TableName, COUNT(*) AS Count FROM ConferenceDivision
+UNION ALL SELECT 'Team', COUNT(*) FROM Team
+UNION ALL SELECT 'AppUser', COUNT(*) FROM AppUser
+UNION ALL SELECT 'NFLFan', COUNT(*) FROM NFLFan
+UNION ALL SELECT 'NFLAdmin', COUNT(*) FROM NFLAdmin
+UNION ALL SELECT 'FanTeam', COUNT(*) FROM FanTeam;
+GO
+
+-- TEST STORED PROCEDURE
+EXEC procGetTeamsForSpecifiedFan @Email = 'tom.brady@example.com';
+GO
+
+PRINT 'All data inserted successfully!';
