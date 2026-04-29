@@ -7,7 +7,7 @@ def validate_user_ui():
     email = st.text_input("Enter Email")
     password = st.text_input("Enter Password", type="password")
 
-    if st.button("Validate User"):
+    if st.button("Login"):
         if not email.strip() or not password.strip():
             st.error("Email and Password are required.")
             return
@@ -18,30 +18,20 @@ def validate_user_ui():
             # Store user info in session state
             st.session_state.app_user_id = result[0]["AppUserID"]
             st.session_state.app_user_fullname = result[0]["Fullname"]
+            st.session_state.user_role = result[0]["UserRole"]
             st.session_state.is_authenticated = True
             st.success(f"Welcome {st.session_state.app_user_fullname}!")
+            st.rerun()
         else:
             st.error("Invalid email or password")
 
-    # Show fan's teams after login
+    # Show logged in status
     if st.session_state.get("is_authenticated", False):
         st.divider()
-        st.subheader(f"Teams associated with {st.session_state.app_user_fullname}")
+        st.info(f"Logged in as: {st.session_state.app_user_fullname} ({st.session_state.user_role})")
         
-        # Fetch fan's favorite teams
-        fan_data = fetch_data("get_teams_for_specified_fan", {"email": email.strip()}, method="GET")
-        
-        if fan_data and isinstance(fan_data, list) and len(fan_data) > 0:
-            # Add placeholder columns for Start Time and Venue if not in data
-            for team in fan_data:
-                if "StartTime" not in team:
-                    team["StartTime"] = "TBD"
-                if "Venue" not in team:
-                    team["Venue"] = "TBD"
-            
-            st.dataframe(fan_data, use_container_width=True, hide_index=True)
-        else:
-            st.info("No teams associated with this fan yet.")
-        
-        # Show fan ID
-        st.text_input("Fan ID", value=st.session_state.app_user_id, disabled=True)
+        if st.button("Logout"):
+            for key in ["app_user_id", "app_user_fullname", "user_role", "is_authenticated"]:
+                if key in st.session_state:
+                    del st.session_state[key]
+            st.rerun()
