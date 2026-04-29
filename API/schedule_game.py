@@ -1,4 +1,4 @@
-rom get_db_connection import get_db_connection
+from get_db_connection import get_db_connection
 
 def schedule_game(home_team_id: int, away_team_id: int, game_round: str, game_date: str, game_start_time: str, stadium_id: int, nfl_admin_id: int):
     try:
