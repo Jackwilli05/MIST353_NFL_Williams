@@ -1,7 +1,6 @@
 from get_db_connection import get_db_connection
-
 import os
-import pyodbc
+import pymssql
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -13,9 +12,9 @@ def test_get_db_connection():
     assert not missing, f"Missing env vars: {missing}"
     print("Env vars loaded")
 
-    # Test 2: Connection returns a pyodbc.Connection object
+    # Test 2: Connection returns a pymssql.Connection object
     conn = get_db_connection()
-    assert isinstance(conn, pyodbc.Connection), "Expected a pyodbc.Connection"
+    assert isinstance(conn, pymssql.Connection), "Expected a pymssql.Connection"
     print("Connection object returned")
 
     # Test 3: Connection is usable (run a simple query)
@@ -27,7 +26,7 @@ def test_get_db_connection():
 
     conn.close()
     print("Connection closed cleanly")
-    print("\n🎉 All tests passed!")
+    print("\nAll tests passed!")
 
 if __name__ == "__main__":
     test_get_db_connection()
