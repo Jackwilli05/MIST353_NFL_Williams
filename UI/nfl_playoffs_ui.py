@@ -19,19 +19,19 @@ else:
 
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Choose a feature", [
+    "Validate User",
     "Get Teams by Conference/Division",
     "Get Teams in Same Division as Team",
-    "Validate User",
     "Get Favorite Teams for Fan",
     "Schedule Game"
 ])
 
-if page == "Get Teams by Conference/Division":
+if page == "Validate User":
+    validate_user_ui()
+elif page == "Get Teams by Conference/Division":
     get_teams_by_conference_division_ui()
 elif page == "Get Teams in Same Division as Team":
     get_teams_in_same_conference_division_as_specified_team_ui()
-elif page == "Validate User":
-    validate_user_ui()
 elif page == "Get Favorite Teams for Fan":
     get_teams_for_specified_fan_ui()
 elif page == "Schedule Game":

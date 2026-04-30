@@ -21,6 +21,10 @@ app.add_middleware(
 def root():
     return {"message": "NFL Playoffs API"}
 
+@app.post("/validate_user")
+def api_validate_user(email: str, password: str):
+    return validate_user(email, password)
+
 @app.get("/get_teams_by_conference_division")
 def read_teams(conference: str = None, division: str = None):
     return get_teams_by_conference_division(conference, division)
@@ -32,10 +36,6 @@ def read_teams_by_team(team_name: str = Query(..., description="Enter Team Name"
 @app.get("/get_teams_for_specified_fan")
 def read_fan_teams(email: str = Query(..., description="Enter Fan's Email")):
     return get_teams_for_specified_fan(email)
-
-@app.post("/validate_user")
-def api_validate_user(email: str, password: str):
-    return validate_user(email, password)
 
 @app.post("/schedule_game")
 def api_schedule_game(
