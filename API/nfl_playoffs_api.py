@@ -5,7 +5,9 @@ from get_teams_in_same_conference_division_as_specified_team import get_teams_in
 from get_teams_for_specified_fan import get_teams_for_specified_fan
 from validate_user import validate_user
 from schedule_game import schedule_game
-
+from get_all_teams import get_all_teams
+from get_all_stadiums import get_all_stadiums
+from get_all_changes_made_by_specified_admin import get_all_changes_made_by_specified_admin
 app = FastAPI(title="NFL Playoffs API")
 
 # Enable CORS for Streamlit
@@ -36,6 +38,18 @@ def read_teams_by_team(team_name: str = Query(..., description="Enter Team Name"
 @app.get("/get_teams_for_specified_fan")
 def read_fan_teams(email: str = Query(..., description="Enter Fan's Email")):
     return get_teams_for_specified_fan(email)
+@app.get("/get_all_teams")
+def api_get_all_teams():
+    return get_all_teams()
+
+@app.get("/get_all_stadiums")
+def api_get_all_stadiums():
+    return get_all_stadiums()
+
+@app.get("/get_all_changes_made_by_specified_admin")
+def api_get_all_changes_made_by_specified_admin(nfl_admin_id: int):
+    return get_all_changes_made_by_specified_admin(nfl_admin_id)
+
 
 @app.post("/schedule_game")
 def api_schedule_game(
