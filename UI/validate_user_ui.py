@@ -14,14 +14,14 @@ def validate_user_ui():
             st.error("Email and Password are required.")
             return
         
-        # POST request with JSON body
-        payload = {
+        # Send as query parameters (not JSON body)
+        params = {
             "email": email.strip(),
             "password": password.strip()
         }
         
         try:
-            response = requests.post(f"{FASTAPI_URL}/validate_user", json=payload)
+            response = requests.post(f"{FASTAPI_URL}/validate_user", params=params)
             
             if response.status_code == 200:
                 data = response.json()
