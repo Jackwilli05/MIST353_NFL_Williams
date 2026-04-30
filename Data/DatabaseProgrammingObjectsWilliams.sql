@@ -158,31 +158,64 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER PROCEDURE procGetAllChangesMadeBySpecifiedAdmin
+create or alter procedure procGetAllTeams
+as
+begin
+    select TeamID, TeamName
+    from Team
+end
+-- execute procGetAllTeams;
+
+go
+
+create or alter procedure procGetAllStadiums
+as
+begin
+    select StadiumID, StadiumName
+    from Stadium
+end
+-- execute procGetAllStadiums;
+
+go
+
+create or alter procedure procGetAllChangesMadeBySpecifiedAdmin
 (
     @NFLAdminID INT
 )
+as
+begin
+    select ACT.ChangeDateTime, ACT.ChangeType, ACT.ChangeDescription, 
+    G.GameRound, G.GameDate, G.GameStartTime,
+    HT.TeamName as HomeTeam, AT.TeamName as AwayTeam, S.StadiumName
+    from AdminChangesTracker ACT inner join Game G
+        on ACT.GameID = G.GameID
+        inner join Team HT
+        on G.HomeTeamID = HT.TeamID
+        inner join Team AT
+        on G.AwayTeamID = AT.TeamID
+        inner join Stadium S
+        on G.StadiumID = S.StadiumID
+    where ACT.NFLAdminID = @NFLAdminID
+    order by ACT.ChangeDateTime desc;
+end
+GO
+
+alter table Team
+add TeamLogo VARBINARY(MAX);
+
+create or alter procedure procGetTeamsWithLogosForSpecifiedFan
+(
+    @NFLFanID INT
+)
 AS
 BEGIN
-    SELECT 
-        ACT.ChangeDateTime, 
-        ACT.ChangeType, 
-        ACT.ChangeDescription,
-        G.GameRound, 
-        G.GameDate, 
-        G.GameStartTime,
-        HT.TeamName AS HomeTeam, 
-        AT.TeamName AS AwayTeam, 
-        S.StadiumName
-    FROM AdminChangesTracker ACT 
-    INNER JOIN Game G ON ACT.GameID = G.GameID
-    INNER JOIN Team HT ON G.HomeTeamID = HT.TeamID
-    INNER JOIN Team AT ON G.AwayTeamID = AT.TeamID
-    INNER JOIN Stadium S ON G.StadiumID = S.StadiumID
-    WHERE ACT.NFLAdminID = @NFLAdminID
-    ORDER BY ACT.ChangeDateTime DESC;
-END;
-GO
+    select T.TeamName, CD.Conference, CD.Division, T.TeamColors, FT.PrimaryTeam, T.TeamLogo
+    from FanTeam FT inner join Team T
+        on FT.TeamID = T.TeamID
+        inner join ConferenceDivision CD
+        on T.ConferenceDivisionID = CD.ConferenceDivisionID
+    where FT.NFLFanID = @NFLFanID;
+end;
 
 SELECT TABLE_NAME 
 FROM INFORMATION_SCHEMA.TABLES 
