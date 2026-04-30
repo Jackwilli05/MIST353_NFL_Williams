@@ -1,6 +1,5 @@
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 from get_teams_by_conference_division import get_teams_by_conference_division
 from get_teams_in_same_conference_division_as_specified_team import get_teams_in_same_division
 from get_teams_for_specified_fan import get_teams_for_specified_fan
@@ -17,16 +16,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Request model for schedule_game
-class GameSchedule(BaseModel):
-    home_team_id: int
-    away_team_id: int
-    game_round: str
-    game_date: str
-    game_start_time: str
-    stadium_id: int
-    nfl_admin_id: int
 
 @app.get("/")
 def root():
@@ -49,13 +38,21 @@ def api_validate_user(email: str, password: str):
     return validate_user(email, password)
 
 @app.post("/schedule_game")
-def api_schedule_game(game: GameSchedule):
+def api_schedule_game(
+    home_team_id: int,
+    away_team_id: int,
+    game_round: str,
+    game_date: str,
+    game_time: str,
+    stadium_id: int,
+    nfl_admin_id: int
+):
     return schedule_game(
-        game.home_team_id,
-        game.away_team_id,
-        game.game_round,
-        game.game_date,
-        game.game_start_time,
-        game.stadium_id,
-        game.nfl_admin_id
+        home_team_id,
+        away_team_id,
+        game_round,
+        game_date,
+        game_time,
+        stadium_id,
+        nfl_admin_id
     )
