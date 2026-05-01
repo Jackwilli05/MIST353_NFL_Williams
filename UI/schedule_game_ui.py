@@ -88,7 +88,6 @@ def schedule_game_ui():
                     st.error(f"Error: {data['error']}")
                 else:
                     st.success("Game scheduled successfully")
-                    st.balloons()
             else:
                 st.error(f"Error: {response.status_code}")
         except Exception as e:
