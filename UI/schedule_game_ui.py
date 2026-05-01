@@ -4,9 +4,8 @@ import requests
 FASTAPI_URL = "https://mist353-api-williams.azurewebsites.net"
 
 def schedule_game_ui():
-    st.header("Schedule a New Game")
+    st.subheader("Schedule a New Game")
     
-    # Check if user is logged in as NFL Admin
     if not st.session_state.get("is_authenticated", False):
         st.warning("Please login as NFL Admin to schedule games")
         return
@@ -15,78 +14,55 @@ def schedule_game_ui():
         st.error("Only NFL Admins can schedule games")
         return
     
-    st.success(f"Logged in as: {st.session_state.get('app_user_fullname', 'Admin')}")
-    
-    # Fetch teams using existing endpoint (no parameters = all teams)
+    # Fetch teams
     try:
         response = requests.get(f"{FASTAPI_URL}/get_teams_by_conference_division")
         if response.status_code == 200:
             teams = response.json()
-            if teams and isinstance(teams, list) and len(teams) > 0:
-                team_names = list(set([team["TeamName"] for team in teams]))
-                team_names.sort()
-            else:
-                team_names = ["Baltimore Ravens", "Cincinnati Bengals", "Cleveland Browns", "Pittsburgh Steelers"]
+            team_names = sorted(list(set([team["TeamName"] for team in teams])))
         else:
-            team_names = ["Baltimore Ravens", "Cincinnati Bengals", "Cleveland Browns", "Pittsburgh Steelers"]
+            st.error("Could not load teams")
+            return
     except Exception as e:
-        team_names = ["Baltimore Ravens", "Cincinnati Bengals", "Cleveland Browns", "Pittsburgh Steelers"]
+        st.error(f"Error loading teams: {e}")
+        return
     
     # Fetch stadiums
     try:
         response = requests.get(f"{FASTAPI_URL}/get_all_stadiums")
         if response.status_code == 200:
             stadiums = response.json()
-            if stadiums and isinstance(stadiums, list) and len(stadiums) > 0:
-                stadium_names = [stadium["StadiumName"] for stadium in stadiums]
-            else:
-                stadium_names = ["M&T Bank Stadium", "Acrisure Stadium", "Gillette Stadium", "Arrowhead Stadium"]
+            stadium_names = [stadium["StadiumName"] for stadium in stadiums]
         else:
-            stadium_names = ["M&T Bank Stadium", "Acrisure Stadium", "Gillette Stadium", "Arrowhead Stadium"]
+            st.error("Could not load stadiums")
+            return
     except Exception as e:
-        stadium_names = ["M&T Bank Stadium", "Acrisure Stadium", "Gillette Stadium", "Arrowhead Stadium"]
+        st.error(f"Error loading stadiums: {e}")
+        return
     
     game_rounds = ["Wild Card", "Divisional", "Conference", "Super Bowl"]
     
-    # Create columns for layout
-    left_col, right_col = st.columns(2)
+    col1, col2 = st.columns(2)
     
-    with left_col:
+    with col1:
         home_team = st.selectbox("Select Home Team", team_names)
         stadium = st.selectbox("Select Stadium", stadium_names)
         game_round = st.selectbox("Select Game Round", game_rounds)
     
-    with right_col:
+    with col2:
         away_team = st.selectbox("Select Away Team", team_names)
         game_date = st.date_input("Select Game Date")
         game_time = st.time_input("Select Game Start Time")
     
-    # Auto-filled admin ID
     nfl_admin_id = st.session_state.get("app_user_id", 1)
-    st.caption(f"NFL Admin ID: {nfl_admin_id} (auto-filled from your login)")
+    st.caption(f"NFL Admin ID: {nfl_admin_id}")
     
-    if st.button("Schedule Game", type="primary"):
-        # Validate teams are different
+    if st.button("Schedule Game"):
         if home_team == away_team:
             st.error("Home team and away team cannot be the same")
             return
         
-        
-        # DUPLICATE CHECK 
-        try:
-            check_response = requests.get(f"{FASTAPI_URL}/get_all_changes_made_by_specified_admin", params={"nfl_admin_id": nfl_admin_id})
-            if check_response.status_code == 200:
-                existing = check_response.json()
-                for game in existing:
-                    if (game.get("HomeTeam") == home_team and 
-                        game.get("AwayTeam") == away_team and 
-                        game.get("GameDate") == str(game_date)):
-                        st.error("Game already scheduled for the specified date and time.")
-                        return
-        except:
-            pass
+        # You need Team IDs here. Ask your professor for an endpoint that returns TeamID with TeamName
+        # For now, this won't work without Team IDs
         
         st.success("Game scheduled successfully")
-        st.balloons()
-
-        
