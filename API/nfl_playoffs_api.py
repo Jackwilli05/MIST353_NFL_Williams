@@ -23,7 +23,7 @@ app.add_middleware(
 def root():
     return {"message": "NFL Playoffs API"}
 
-@app.post("/validate_user")
+@app.get("/validate_user")
 def api_validate_user(email: str, password: str):
     return validate_user(email, password)
 
