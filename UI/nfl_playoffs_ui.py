@@ -21,35 +21,18 @@ else:
 
 st.sidebar.title("Navigation")
 
-# Dropdown menu based on user role
-if st.session_state.get("is_authenticated", False):
-    if st.session_state.get("user_role") == "NFLAdmin":
-        page = st.sidebar.selectbox("Choose a feature", [
-            "Validate User",
-            "Get Teams by Conference/Division",
-            "Get Teams in Same Division as Team",
-            "Get Favorite Teams for Fan",
-            "Get Favorite Teams with Logos",
-            "Schedule Game",
-            "View Admin Change History"
-        ])
-    else:
-        page = st.sidebar.selectbox("Choose a feature", [
-            "Validate User",
-            "Get Teams by Conference/Division",
-            "Get Teams in Same Division as Team",
-            "Get Favorite Teams for Fan",
-            "Get Favorite Teams with Logos"
-        ])
-else:
-    page = st.sidebar.selectbox("Choose a feature", [
-        "Validate User",
-        "Get Teams by Conference/Division",
-        "Get Teams in Same Division as Team",
-        "Get Favorite Teams for Fan"
-    ])
+# Show all options in dropdown for everyone
+page = st.sidebar.selectbox("Choose a feature", [
+    "Validate User",
+    "Get Teams by Conference/Division",
+    "Get Teams in Same Division as Team",
+    "Get Favorite Teams for Fan",
+    "Get Favorite Teams with Logos",
+    "Schedule Game",
+    "View Admin Change History"
+])
 
-# Page routing
+# Page routing with login checks for restricted features
 if page == "Validate User":
     validate_user_ui()
 elif page == "Get Teams by Conference/Division":
@@ -61,9 +44,21 @@ elif page == "Get Favorite Teams for Fan":
 elif page == "Get Favorite Teams with Logos":
     get_teams_with_logos_for_specified_fan_ui()
 elif page == "Schedule Game":
-    schedule_game_ui()
+    # Check if logged in as NFL Admin
+    if not st.session_state.get("is_authenticated", False):
+        st.error("Please login to schedule games")
+    elif st.session_state.get("user_role") != "NFLAdmin":
+        st.error("Only NFL Admins can schedule games")
+    else:
+        schedule_game_ui()
 elif page == "View Admin Change History":
-    get_all_changes_made_by_specified_admin_ui()
+    # Check if logged in as NFL Admin
+    if not st.session_state.get("is_authenticated", False):
+        st.error("Please login to view change history")
+    elif st.session_state.get("user_role") != "NFLAdmin":
+        st.error("Only NFL Admins can view change history")
+    else:
+        get_all_changes_made_by_specified_admin_ui()
 
 st.sidebar.markdown("---")
 if st.session_state.get("is_authenticated", False):
