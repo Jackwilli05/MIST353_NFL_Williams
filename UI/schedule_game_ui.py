@@ -18,13 +18,29 @@ def schedule_game_ui():
     
     st.success(f"Logged in as: {st.session_state.get('app_user_fullname', 'Admin')}")
     
-    # Fetch teams for dropdown
-    teams = fetch_data("get_teams_by_conference_division", {})
-    team_options = {team["TeamName"]: team["TeamID"] for team in teams} if teams else {}
+    # Fetch teams for dropdown with error handling
+    try:
+        teams = fetch_data("get_teams_by_conference_division", {})
+        if teams and isinstance(teams, list) and len(teams) > 0:
+            team_options = {team["TeamName"]: team["TeamID"] for team in teams}
+        else:
+            team_options = {}
+            st.warning("Could not load teams. Using manual ID entry.")
+    except Exception as e:
+        team_options = {}
+        st.warning(f"Could not load teams: {e}. Using manual ID entry.")
     
-    # Fetch stadiums for dropdown
-    stadiums = fetch_data("get_all_stadiums", {})
-    stadium_options = {stadium["StadiumName"]: stadium["StadiumID"] for stadium in stadiums} if stadiums else {}
+    # Fetch stadiums for dropdown with error handling
+    try:
+        stadiums = fetch_data("get_all_stadiums", {})
+        if stadiums and isinstance(stadiums, list) and len(stadiums) > 0:
+            stadium_options = {stadium["StadiumName"]: stadium["StadiumID"] for stadium in stadiums}
+        else:
+            stadium_options = {}
+            st.warning("Could not load stadiums. Using manual ID entry.")
+    except Exception as e:
+        stadium_options = {}
+        st.warning(f"Could not load stadiums: {e}. Using manual ID entry.")
     
     col1, col2 = st.columns(2)
     
