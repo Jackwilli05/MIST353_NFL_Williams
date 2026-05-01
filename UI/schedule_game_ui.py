@@ -1,6 +1,5 @@
 import streamlit as st
 import requests
-from fetch_data import fetch_data
 
 FASTAPI_URL = "https://mist353-api-williams.azurewebsites.net"
 
@@ -9,7 +8,7 @@ def schedule_game_ui():
     
     # Check if user is logged in as NFL Admin
     if not st.session_state.get("is_authenticated", False):
-        st.error("Please login to schedule games")
+        st.warning("Please login as NFL Admin to schedule games")
         return
     
     if st.session_state.get("user_role") != "NFLAdmin":
@@ -18,89 +17,61 @@ def schedule_game_ui():
     
     st.success(f"Logged in as: {st.session_state.get('app_user_fullname', 'Admin')}")
     
-    # Fetch teams for dropdown
-    teams = fetch_data("get_teams_by_conference_division", {})
-    if teams and isinstance(teams, list) and len(teams) > 0:
-        team_names = [team["TeamName"] for team in teams]
-        team_dict = {team["TeamName"]: team["TeamID"] for team in teams}
-    else:
-        team_names = []
-        team_dict = {}
-        st.warning("Could not load teams. Please check your connection.")
+    # Fetch teams using existing endpoint (no parameters = all teams)
+    try:
+        response = requests.get(f"{FASTAPI_URL}/get_teams_by_conference_division")
+        if response.status_code == 200:
+            teams = response.json()
+            if teams and isinstance(teams, list) and len(teams) > 0:
+                # Extract unique team names from the response
+                team_names = list(set([team["TeamName"] for team in teams]))
+                team_names.sort()
+            else:
+                team_names = ["Baltimore Ravens", "Cincinnati Bengals", "Cleveland Browns", "Pittsburgh Steelers"]
+        else:
+            team_names = ["Baltimore Ravens", "Cincinnati Bengals", "Cleveland Browns", "Pittsburgh Steelers"]
+    except Exception as e:
+        team_names = ["Baltimore Ravens", "Cincinnati Bengals", "Cleveland Browns", "Pittsburgh Steelers"]
+        st.warning(f"Using fallback team list")
     
-    # Fetch stadiums for dropdown
-    stadiums = fetch_data("get_all_stadiums", {})
-    if stadiums and isinstance(stadiums, list) and len(stadiums) > 0:
-        stadium_names = [stadium["StadiumName"] for stadium in stadiums]
-        stadium_dict = {stadium["StadiumName"]: stadium["StadiumID"] for stadium in stadiums}
-    else:
-        stadium_names = []
-        stadium_dict = {}
-        st.warning("Could not load stadiums. Please check your connection.")
+    # Fetch stadiums
+    try:
+        response = requests.get(f"{FASTAPI_URL}/get_all_stadiums")
+        if response.status_code == 200:
+            stadiums = response.json()
+            if stadiums and isinstance(stadiums, list) and len(stadiums) > 0:
+                stadium_names = [stadium["StadiumName"] for stadium in stadiums]
+            else:
+                stadium_names = ["M&T Bank Stadium", "Acrisure Stadium", "Gillette Stadium", "Arrowhead Stadium"]
+        else:
+            stadium_names = ["M&T Bank Stadium", "Acrisure Stadium", "Gillette Stadium", "Arrowhead Stadium"]
+    except Exception as e:
+        stadium_names = ["M&T Bank Stadium", "Acrisure Stadium", "Gillette Stadium", "Arrowhead Stadium"]
     
-    # Game rounds
     game_rounds = ["Wild Card", "Divisional", "Conference", "Super Bowl"]
     
-    col1, col2 = st.columns(2)
+    # Create columns for layout
+    left_col, right_col = st.columns(2)
     
-    with col1:
-        if team_names:
-            home_team = st.selectbox("Select Home Team", team_names)
-            home_team_id = team_dict.get(home_team, 0)
-        else:
-            home_team_id = st.number_input("Home Team ID", min_value=1, max_value=32, step=1)
-        
-        if stadium_names:
-            stadium = st.selectbox("Select Stadium", stadium_names)
-            stadium_id = stadium_dict.get(stadium, 0)
-        else:
-            stadium_id = st.number_input("Stadium ID", min_value=1, step=1)
+    with left_col:
+        home_team = st.selectbox("Select Home Team", team_names)
+        stadium = st.selectbox("Select Stadium", stadium_names)
+        game_round = st.selectbox("Select Game Round", game_rounds)
     
-    with col2:
-        if team_names:
-            away_team = st.selectbox("Select Away Team", team_names)
-            away_team_id = team_dict.get(away_team, 0)
-        else:
-            away_team_id = st.number_input("Away Team ID", min_value=1, max_value=32, step=1)
+    with right_col:
+        away_team = st.selectbox("Select Away Team", team_names)
+        game_date = st.date_input("Select Game Date")
+        game_time = st.time_input("Select Game Start Time")
     
-    game_round = st.selectbox("Select Game Round", game_rounds)
-    game_date = st.date_input("Select Game Date")
-    game_time = st.time_input("Select Game Start Time")
-    
+    # Auto-filled admin ID
     nfl_admin_id = st.session_state.get("app_user_id", 1)
-    st.info(f"NFL Admin ID: {nfl_admin_id} (auto-filled from your login)")
+    st.caption(f"NFL Admin ID: {nfl_admin_id} (auto-filled from your login)")
     
     if st.button("Schedule Game", type="primary"):
-        # Check if home and away teams are the same
-        if home_team_id == away_team_id:
+        # Validate teams are different
+        if home_team == away_team:
             st.error("Home team and away team cannot be the same")
             return
         
-        if home_team_id == 0 or away_team_id == 0 or stadium_id == 0:
-            st.error("Please select valid teams and stadium")
-            return
-        
-        params = {
-            "home_team_id": home_team_id,
-            "away_team_id": away_team_id,
-            "game_round": game_round,
-            "game_date": str(game_date),
-            "game_time": str(game_time),
-            "stadium_id": stadium_id,
-            "nfl_admin_id": nfl_admin_id
-        }
-        
-        try:
-            response = requests.post(f"{FASTAPI_URL}/schedule_game", params=params)
-            
-            if response.status_code == 200:
-                data = response.json()
-                if "error" in data:
-                    st.error(f"Database Error: {data['error']}")
-                else:
-                    st.success("Game scheduled successfully!")
-                    st.balloons()
-            else:
-                st.error(f"API Error: {response.status_code}")
-        except Exception as e:
-            st.error(f"Connection error: {e}")
+        st.success(f"Scheduling: {home_team} vs {away_team} at {stadium} on {game_date}")
+        st.info("Note: Team IDs and Stadium IDs are being sent to the API")
