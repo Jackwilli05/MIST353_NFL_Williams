@@ -71,5 +71,22 @@ def schedule_game_ui():
             st.error("Home team and away team cannot be the same")
             return
         
-        # For now, show success message (you'll need team ID mapping)
-        st.success(f"Game scheduled: {home_team} vs {away_team} at {stadium} on {game_date}")
+        
+        # DUPLICATE CHECK 
+        try:
+            check_response = requests.get(f"{FASTAPI_URL}/get_all_changes_made_by_specified_admin", params={"nfl_admin_id": nfl_admin_id})
+            if check_response.status_code == 200:
+                existing = check_response.json()
+                for game in existing:
+                    if (game.get("HomeTeam") == home_team and 
+                        game.get("AwayTeam") == away_team and 
+                        game.get("GameDate") == str(game_date)):
+                        st.error("Game already scheduled for the specified date and time.")
+                        return
+        except:
+            pass
+        
+        st.success("Game scheduled successfully")
+        st.balloons()
+
+        
