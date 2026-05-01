@@ -14,12 +14,13 @@ def schedule_game_ui():
         st.error("Only NFL Admins can schedule games")
         return
     
-    # Fetch teams
+    # Fetch teams (now includes TeamID)
     try:
         response = requests.get(f"{FASTAPI_URL}/get_teams_by_conference_division")
         if response.status_code == 200:
             teams = response.json()
-            team_names = sorted(list(set([team["TeamName"] for team in teams])))
+            team_names = [team["TeamName"] for team in teams]
+            team_ids = {team["TeamName"]: team["TeamID"] for team in teams}
         else:
             st.error("Could not load teams")
             return
@@ -33,6 +34,7 @@ def schedule_game_ui():
         if response.status_code == 200:
             stadiums = response.json()
             stadium_names = [stadium["StadiumName"] for stadium in stadiums]
+            stadium_ids = {stadium["StadiumName"]: stadium["StadiumID"] for stadium in stadiums}
         else:
             st.error("Could not load stadiums")
             return
@@ -62,7 +64,44 @@ def schedule_game_ui():
             st.error("Home team and away team cannot be the same")
             return
         
-        # You need Team IDs here. Ask your professor for an endpoint that returns TeamID with TeamName
-        # For now, this won't work without Team IDs
+        home_team_id = team_ids.get(home_team)
+        away_team_id = team_ids.get(away_team)
+        stadium_id = stadium_ids.get(stadium)
         
-        st.success("Game scheduled successfully")
+        # Check for duplicate game
+        try:
+            check_response = requests.get(f"{FASTAPI_URL}/get_all_changes_made_by_specified_admin", params={"nfl_admin_id": nfl_admin_id})
+            if check_response.status_code == 200:
+                existing = check_response.json()
+                for game in existing:
+                    if (game.get("HomeTeam") == home_team and 
+                        game.get("AwayTeam") == away_team and 
+                        game.get("GameDate") == str(game_date)):
+                        st.error("Game already scheduled for this date")
+                        return
+        except:
+            pass
+        
+        params = {
+            "home_team_id": home_team_id,
+            "away_team_id": away_team_id,
+            "game_round": game_round,
+            "game_date": str(game_date),
+            "game_time": str(game_time),
+            "stadium_id": stadium_id,
+            "nfl_admin_id": nfl_admin_id
+        }
+        
+        try:
+            response = requests.post(f"{FASTAPI_URL}/schedule_game", params=params)
+            if response.status_code == 200:
+                data = response.json()
+                if "error" in data:
+                    st.error(f"Error: {data['error']}")
+                else:
+                    st.success("Game scheduled successfully")
+                    st.balloons()
+            else:
+                st.error(f"Error: {response.status_code}")
+        except Exception as e:
+            st.error(f"Connection error: {e}")
