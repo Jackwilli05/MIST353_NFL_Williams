@@ -23,7 +23,6 @@ def schedule_game_ui():
         if response.status_code == 200:
             teams = response.json()
             if teams and isinstance(teams, list) and len(teams) > 0:
-                # Extract unique team names from the response
                 team_names = list(set([team["TeamName"] for team in teams]))
                 team_names.sort()
             else:
@@ -32,7 +31,6 @@ def schedule_game_ui():
             team_names = ["Baltimore Ravens", "Cincinnati Bengals", "Cleveland Browns", "Pittsburgh Steelers"]
     except Exception as e:
         team_names = ["Baltimore Ravens", "Cincinnati Bengals", "Cleveland Browns", "Pittsburgh Steelers"]
-        st.warning(f"Using fallback team list")
     
     # Fetch stadiums
     try:
@@ -73,5 +71,5 @@ def schedule_game_ui():
             st.error("Home team and away team cannot be the same")
             return
         
-        st.success(f"Scheduling: {home_team} vs {away_team} at {stadium} on {game_date}")
-        st.info("Note: Team IDs and Stadium IDs are being sent to the API")
+        # For now, show success message (you'll need team ID mapping)
+        st.success(f"Game scheduled: {home_team} vs {away_team} at {stadium} on {game_date}")

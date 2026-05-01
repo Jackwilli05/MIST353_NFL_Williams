@@ -72,3 +72,24 @@ def api_schedule_game(
         stadium_id,
         nfl_admin_id
     )
+
+@app.get("/check_game_conflict")
+def check_game_conflict(home_team_id: int, away_team_id: int, game_date: str):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(as_dict=True)
+        
+        cursor.execute("""
+            SELECT COUNT(*) as count 
+            FROM Game 
+            WHERE (HomeTeamID = %s AND AwayTeamID = %s AND GameDate = %s)
+               OR (HomeTeamID = %s AND AwayTeamID = %s AND GameDate = %s)
+        """, (home_team_id, away_team_id, game_date, away_team_id, home_team_id, game_date))
+        
+        result = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        
+        return {"conflict": result["count"] > 0}
+    except Exception as e:
+        return {"error": str(e)}
