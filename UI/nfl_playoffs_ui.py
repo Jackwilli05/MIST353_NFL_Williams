@@ -21,10 +21,10 @@ else:
 
 st.sidebar.title("Navigation")
 
-# Different menu based on user role
+# Dropdown menu based on user role
 if st.session_state.get("is_authenticated", False):
     if st.session_state.get("user_role") == "NFLAdmin":
-        page = st.sidebar.radio("Choose a feature", [
+        page = st.sidebar.selectbox("Choose a feature", [
             "Validate User",
             "Get Teams by Conference/Division",
             "Get Teams in Same Division as Team",
@@ -34,7 +34,7 @@ if st.session_state.get("is_authenticated", False):
             "View Admin Change History"
         ])
     else:
-        page = st.sidebar.radio("Choose a feature", [
+        page = st.sidebar.selectbox("Choose a feature", [
             "Validate User",
             "Get Teams by Conference/Division",
             "Get Teams in Same Division as Team",
@@ -42,7 +42,7 @@ if st.session_state.get("is_authenticated", False):
             "Get Favorite Teams with Logos"
         ])
 else:
-    page = st.sidebar.radio("Choose a feature", [
+    page = st.sidebar.selectbox("Choose a feature", [
         "Validate User",
         "Get Teams by Conference/Division",
         "Get Teams in Same Division as Team",
