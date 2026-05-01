@@ -14,7 +14,9 @@ def schedule_game_ui():
         st.error("Only NFL Admins can schedule games")
         return
     
-    # Fetch teams (now includes TeamID)
+    st.success(f"Logged in as: {st.session_state.get('app_user_fullname', 'Admin')}")
+    
+    # Fetch teams
     try:
         response = requests.get(f"{FASTAPI_URL}/get_teams_by_conference_division")
         if response.status_code == 200:
@@ -67,20 +69,6 @@ def schedule_game_ui():
         home_team_id = team_ids.get(home_team)
         away_team_id = team_ids.get(away_team)
         stadium_id = stadium_ids.get(stadium)
-        
-        # Check for duplicate game
-        try:
-            check_response = requests.get(f"{FASTAPI_URL}/get_all_changes_made_by_specified_admin", params={"nfl_admin_id": nfl_admin_id})
-            if check_response.status_code == 200:
-                existing = check_response.json()
-                for game in existing:
-                    if (game.get("HomeTeam") == home_team and 
-                        game.get("AwayTeam") == away_team and 
-                        game.get("GameDate") == str(game_date)):
-                        st.error("Game already scheduled for this date")
-                        return
-        except:
-            pass
         
         params = {
             "home_team_id": home_team_id,
