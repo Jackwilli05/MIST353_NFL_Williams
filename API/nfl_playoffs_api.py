@@ -38,12 +38,14 @@ def read_teams_by_team(team_name: str = Query(..., description="Enter Team Name"
 @app.get("/get_teams_for_specified_fan")
 def read_fan_teams(email: str = Query(..., description="Enter Fan's Email")):
     return get_teams_for_specified_fan(email)
+
 @app.get("/get_all_teams")
 def api_get_all_teams():
     return get_all_teams()
 
 @app.get("/get_all_stadiums")
 def api_get_all_stadiums():
+    from get_all_stadiums import get_all_stadiums
     return get_all_stadiums()
 
 @app.get("/get_all_changes_made_by_specified_admin")
